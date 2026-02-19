@@ -1,7 +1,6 @@
 ﻿using FlightDataProvider.Data;
 using FlightDataProvider.DTOs;
 using FlightDataProvider.Models;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -14,13 +13,20 @@ namespace FlightDataProvider.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Flight>>> GetAll()
         {
-            return await context.Flights.ToListAsync();
+            return await context.Flights
+                .Include(f => f.Departure)
+                .Include(f => f.Arrival)
+                .ToListAsync();
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<Flight>> GetByID(int id)
         {
-            var flight = await context.Flights.FindAsync(id);
+            var flight = await context.Flights
+                .Include(f => f.Departure)
+                .Include(f => f.Arrival)
+                .FirstOrDefaultAsync(f => f.Id == id);
+
             if (flight == null)
                 return NotFound();
             return flight;
@@ -32,15 +38,22 @@ namespace FlightDataProvider.Controllers
             var flight = new Flight
             {
                 FlightNumber = dto.FlightNumber,
-                Arrival = dto.Arrival,
+                ArrivalId = dto.ArrivalId,
                 ArrivalTime = dto.ArrivalTime,
-                Departure = dto.Departure,
+                DepartureId = dto.DepartureId,
                 DepartureTime = dto.DepartureTime
             };
 
             await context.Flights.AddAsync(flight);
             await context.SaveChangesAsync();
-            return CreatedAtAction(nameof(GetByID), new { id = flight.Id }, flight);
+
+            // Reload
+            var created = await context.Flights
+                .Include(f => f.Departure)
+                .Include(f => f.Arrival)
+                .FirstAsync(f => f.Id == flight.Id);
+
+            return CreatedAtAction(nameof(GetByID), new { id = flight.Id }, created);
         }
 
         [HttpPatch("{id}")]
@@ -52,9 +65,9 @@ namespace FlightDataProvider.Controllers
                 return NotFound();
 
             flight.FlightNumber = dto.FlightNumber;
-            flight.Arrival = dto.Arrival;
+            flight.ArrivalId = dto.ArrivalId;
             flight.ArrivalTime = dto.ArrivalTime;
-            flight.Departure = dto.Departure;
+            flight.DepartureId = dto.DepartureId;
             flight.DepartureTime = dto.DepartureTime;
 
             await context.SaveChangesAsync();
