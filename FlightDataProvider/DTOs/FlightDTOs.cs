@@ -18,5 +18,6 @@ namespace FlightDataProvider.DTOs
         public required int ArrivalId { get; set; }
         public DateTime DepartureTime { get; set; }
         public DateTime ArrivalTime { get; set; }
+        public double Distance { get; set; }
     }
 }

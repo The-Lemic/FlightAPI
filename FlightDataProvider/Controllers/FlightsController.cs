@@ -41,7 +41,8 @@ namespace FlightDataProvider.Controllers
                 ArrivalId = dto.ArrivalId,
                 ArrivalTime = dto.ArrivalTime,
                 DepartureId = dto.DepartureId,
-                DepartureTime = dto.DepartureTime
+                DepartureTime = dto.DepartureTime,
+                Distance = dto.Distance
             };
 
             await context.Flights.AddAsync(flight);
@@ -69,6 +70,7 @@ namespace FlightDataProvider.Controllers
             flight.ArrivalTime = dto.ArrivalTime;
             flight.DepartureId = dto.DepartureId;
             flight.DepartureTime = dto.DepartureTime;
+            flight.Distance = dto.Distance;
 
             await context.SaveChangesAsync();
             return NoContent();

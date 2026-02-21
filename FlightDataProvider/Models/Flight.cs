@@ -10,5 +10,6 @@
         public Location Arrival { get; set; } = null!;
         public DateTime DepartureTime { get; set; }
         public DateTime ArrivalTime { get; set; }
+        public double Distance { get; set; }
     }
 }
