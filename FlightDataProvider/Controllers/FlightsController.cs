@@ -48,7 +48,7 @@ namespace FlightDataProvider.Controllers
             await context.Flights.AddAsync(flight);
             await context.SaveChangesAsync();
 
-            // Reload s
+            // Reload
             var created = await context.Flights
                 .Include(f => f.Departure)
                 .Include(f => f.Arrival)
