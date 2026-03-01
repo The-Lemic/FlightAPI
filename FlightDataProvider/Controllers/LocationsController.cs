@@ -1,11 +1,13 @@
 ﻿using FlightDataProvider.Data;
 using FlightDataProvider.DTOs;
 using FlightDataProvider.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace FlightDataProvider.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class LocationsController(FlightDataContext context) : ControllerBase
